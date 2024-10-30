@@ -1,5 +1,16 @@
 {
     "taches": [
-        
+
+        {"nom": "manger",
+         "description": "un cassoulet",
+         "date": "02/10/2024"},
+         
+        {"nom": "dormir",
+         "description": "pendant 3 jours",
+         "date": "04/11/2024"},
+         
+         {"nom": "courrir",
+         "description": "pas longtemps",
+         "date": "02/11/2024"}
     ]
 }
