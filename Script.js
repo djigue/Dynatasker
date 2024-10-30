@@ -206,9 +206,7 @@ function ajouterTache () {
 
             //message = responsetext()
             .then(message => {
-                console.log("message :" + message);
-                toDoList.push(newTache); 
-                fetchEtListerTaches(); 
+                setTimeout(() => fetchEtListerTaches(), 500);
                 alert("Nouvelle tâche ajoutée avec succès");
 
             })
