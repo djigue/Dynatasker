@@ -34,7 +34,7 @@ app.post('/ajouter-tache', (req, res) => { //req = requete  res = reponse
         toDoList.push(newTache);
 
         // ecrit tableau contacts dans gdc.json  stringify convertit fichier js en json
-        fs.writeFile('todolist.json', JSON.stringify({ toDoList },null, 2), (err) => {
+        fs.writeFile('todolist.json', JSON.stringify({ taches: toDoList },null, 2), (err) => {
             if (err) {
                 return res.status(500).send('Erreur d\'écriture dans le fichier');
             }
@@ -48,3 +48,4 @@ app.post('/ajouter-tache', (req, res) => { //req = requete  res = reponse
 app.listen(PORT, () => {
     console.log(`Serveur en cours d'exécution sur http://localhost:${PORT}`);
 });
+

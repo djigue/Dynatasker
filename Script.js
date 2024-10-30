@@ -1,7 +1,5 @@
 let toDoList = [];
 const options = ["Toutes", "Actives", "Terminées"];
-const bouton = document.createElement("button");
-bouton.style.cursor = "pointer";
 
 document.addEventListener("DOMContentLoaded", function() {
     fetchEtListerTaches();
@@ -63,7 +61,8 @@ function afficherMenu() {
     creerCheckbox();
     
     const ul = document.createElement("section");
-
+    
+    
     toDoList.forEach(tache => {
         const li = document.createElement("p");
         li.textContent = `${tache.nom} ${tache.description} - ${tache.date}`;
@@ -71,13 +70,16 @@ function afficherMenu() {
     });
 
     menuDiv.appendChild(ul);
-
-    bouton.textContent = "Créer une nouvelle tâche";
     
+    const bouton = document.createElement("button");
+    bouton.style.cursor = "pointer";
+    bouton.textContent = "Créer une nouvelle tâche";
 
     menuDiv.appendChild(bouton);
+    
 
     bouton.addEventListener('click', function(e) {
+        e.preventDefault();
        ajouterTache();
     })
 }
@@ -122,12 +124,11 @@ function ajouterTache () {
     labelNom.textContent = "Quel nom voulez vous donner à votre nouvelle tâche :"
     form.appendChild(labelNom);
 
-    const nom = document.createElement("input");
-    nom.placeholder = "Nom de la tâche";
-    form.appendChild(nom);
-    nom.style.marginTop = "5%";
-    nom.setAttribute('required', '');
-    form.appendChild(nom);
+    const nomInput = document.createElement("input");
+    nomInput.placeholder = "Nom de la tâche";
+    nomInput.style.marginTop = "5%";
+    nomInput.setAttribute('required', '');
+    form.appendChild(nomInput);
 
     const brInput = document.createElement("br");
     form.appendChild(brInput);
@@ -136,12 +137,11 @@ function ajouterTache () {
     labelDescription.textContent = "Décrivez votre tâche :";
     form.appendChild(labelDescription);
 
-    const description = document.createElement("textarea");
-    description.placeholder = "Description de la tâche";
-    form.appendChild(description);
-    description.style.marginTop = "5%";
-    description.setAttribute('required', '');
-    form.appendChild(description);
+    const descriptionInput = document.createElement("textarea");
+    descriptionInput.placeholder = "Description de la tâche";
+    descriptionInput.style.marginTop = "5%";
+    descriptionInput.setAttribute('required', '');
+    form.appendChild(descriptionInput);
 
     const brInput1 = document.createElement("br");
     form.appendChild(brInput1);
@@ -150,29 +150,31 @@ function ajouterTache () {
     labelDate.textContent = "Quelle est la date limite :"
     form.appendChild(labelDate);
 
-    const date = document.createElement("input");
-    date.setAttribute('type','tel');
-    date.placeholder = "jj/mm/aaaa";
-    date.setAttribute('required', '');
-    form.appendChild(date);
+    const dateInput = document.createElement("input");
+    dateInput.placeholder = "jj/mm/aaaa";
+    dateInput.setAttribute('required', '');
+    form.appendChild(dateInput);
 
-    form.appendChild(date);
-    date.style.marginTop = "5%";
-    
+    form.appendChild(dateInput);
+
     const brInput2 = document.createElement("br");
     form.appendChild(brInput2);
 
     menuDiv.appendChild(form);
 
+    const bouton = document.createElement("button");
+    bouton.style.cursor = "pointer";
     bouton.textContent = "Ajouter la tâche";
 
     menuDiv.appendChild(bouton);
-
+    
+    
     bouton.addEventListener("click", function(e) {
         e.preventDefault();
-        const nom = nom.value;
-        const description = description.value;
-        const date = date.value;
+
+        const nom = nomInput.value;
+        const description = descriptionInput.value;
+        const date = dateInput.value;
 
         if (nom && description && date && form.checkValidity()) {
             const newTache = {
@@ -196,7 +198,7 @@ function ajouterTache () {
 
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Erreur lors de l\'ajout de la tâche');
+                    throw new Error('Erreur de com');
                 }
                 return response.text();//transforme la reponse en chaine de charactère
     
@@ -205,8 +207,8 @@ function ajouterTache () {
             //message = responsetext()
             .then(message => {
                 console.log("message :" + message);
-                contacts.push(newTache); 
-                fetchEtListerTaches(toDoList); 
+                toDoList.push(newTache); 
+                fetchEtListerTaches(); 
                 alert("Nouvelle tâche ajoutée avec succès");
 
             })
@@ -219,4 +221,7 @@ function ajouterTache () {
         }
     }); 
 }
+
+
+
 
