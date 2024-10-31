@@ -55,15 +55,15 @@ function afficherMenu() {
         ajouterTache();
     });
 
-    const boutonSupp = document.createElement("button");
-    boutonSupp.style.cursor = "pointer";
-    boutonSupp.textContent = "Supprimer une tâche";
-    menuDiv.appendChild(boutonSupp);
+    // const boutonSupp = document.createElement("button");
+    // boutonSupp.style.cursor = "pointer";
+    // boutonSupp.textContent = "Supprimer une tâche";
+    // menuDiv.appendChild(boutonSupp);
 
-    boutonSupp.addEventListener("click", function(e) {
-        e.preventDefault();
-        supprimerTache();
-    });
+    // boutonSupp.addEventListener("click", function(e) {
+    //     e.preventDefault();
+    //     supprimerTache();
+    // });
 
  
 }
@@ -180,12 +180,19 @@ function ajouterTache() {
 
 async function ecrireJSON(action, tache, id = null) {
     const url = 'http://localhost:3000/gestion-tache';
+
+    if (action === 'supprimer' && (!tache.nom || !tache.date)) {
+        console.error("Erreur : Tâche mal formatée", tache);
+        alert("Erreur : Tâche mal formatée, nom et date requis !");
+        return; 
+    }
+
     const options = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action, tache, id }),
     };
-
+    console.log("Données envoyées :", { action, tache, id });
     try {
         const response = await fetch(url, options);
         if (!response.ok) throw new Error("Erreur lors de l'écriture des données");
@@ -200,43 +207,16 @@ async function ecrireJSON(action, tache, id = null) {
     }
 }
 
-function supprimerTache() {
-const menuDiv = document.getElementById("container");
-    menuDiv.innerHTML = "";
+function supprimerTache(nom, date) {
 
-    const titre = document.createElement("h1");
-    titre.textContent = "Quelle tâche voulez vous supprimer";
-    titre.style.color = "#B22430";
-    menuDiv.style.textAlign = "center";
-    menuDiv.appendChild(titre);
-
-    const champs = [
-        { name: 'nom', type: 'text', label: 'Nom de la tâche :', placeholder: 'nom de la tache' },
-        { name: 'date', type: 'date', label: 'Pour Quand :', placeholder: 'jj/mm/aaaa' }
-    ]
-
-    const form = createForm(champs);
-    menuDiv.appendChild(form);
- 
-    const boutonSupp = document.createElement("button");
-    boutonSupp.style.cursor = "pointer";
-    boutonSupp.textContent = "Supprimer la tâche";
-    menuDiv.appendChild(boutonSupp);
-
-    boutonSupp.addEventListener("click", function(e) {
-        e.preventDefault();
-
-        const nom = document.getElementById('nom').value;
-        const date = document.getElementById('date').value;
-
-        if (nom && date && form.checkValidity()) {
-
-            const dateParts = date.split('-'); 
-            const formatDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+        if (!nom || !date) {
+            alert("Nom et date de la tâche sont requis pour la suppression !");
+            return;
+        }
 
             const suppTache = {
                 nom: nom,
-                date: formatDate,
+                date: date,
             };
 
             ecrireJSON("supprimer", suppTache)
@@ -246,10 +226,6 @@ const menuDiv = document.getElementById("container");
                 .catch(error => {
                     console.error("Erreur lors de la suppression de la tâche :", error);
                 });
-        } else {
-            alert("Respectez le format imposé!! (on a pas galéré pour rien)");
-        }
-    });
 }
 
 function modifierTache() {
@@ -324,10 +300,29 @@ function afficherTaches(taches) {
         const dateTache = document.createElement("p");
         dateTache.textContent = `Date : ${tache.date}`;
 
+        const boutonSupp = document.createElement("button");
+        boutonSupp.textContent = "Supprimer";
+        boutonSupp.style.cursor = "pointer";
+        boutonSupp.addEventListener("click", function() {
+
+            supprimerTache(tache.nom, tache.date);
+        });
+
+        
+        const boutonMod = document.createElement("button");
+        boutonMod.textContent = "Modifier";
+        boutonMod.style.cursor = "pointer";
+        boutonMod.addEventListener("click", function() {
+            
+            modifierTache(tache);
+        });
+
        
         tacheDiv.appendChild(nomTache);
         tacheDiv.appendChild(descTache);
         tacheDiv.appendChild(dateTache);
+        tacheDiv.appendChild(boutonSupp); 
+        tacheDiv.appendChild(boutonMod);
 
         
         ul.appendChild(tacheDiv);

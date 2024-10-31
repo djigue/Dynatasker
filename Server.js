@@ -46,7 +46,7 @@ app.post('/gestion-tache', (req, res) => {
                     testTache.nom === tache.nom && testTache.date === tache.date
                 );
 
-                if (tacheASupprimer.length === -1) {
+                if (tacheASupprimer.length === 0) {
                     return res.status(404).send('Tâche non trouvée');
                 }
 
