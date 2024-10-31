@@ -160,6 +160,7 @@ function ajouterTache() {
             const formatDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
 
             const newTache = {
+                id: generateUniqueId(),
                 nom: nom,
                 description: description,
                 date: formatDate,
@@ -181,12 +182,6 @@ function ajouterTache() {
 async function ecrireJSON(action, tache, id = null) {
     const url = 'http://localhost:3000/gestion-tache';
 
-    if (action === 'supprimer' && (!tache.nom || !tache.date)) {
-        console.error("Erreur : Tâche mal formatée", tache);
-        alert("Erreur : Tâche mal formatée, nom et date requis !");
-        return; 
-    }
-
     const options = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -207,16 +202,11 @@ async function ecrireJSON(action, tache, id = null) {
     }
 }
 
-function supprimerTache(nom, date) {
+function supprimerTache(tache) {
 
-        if (!nom || !date) {
-            alert("Nom et date de la tâche sont requis pour la suppression !");
-            return;
-        }
 
             const suppTache = {
-                nom: nom,
-                date: date,
+                id: tache.id,
             };
 
             ecrireJSON("supprimer", suppTache)
@@ -228,20 +218,20 @@ function supprimerTache(nom, date) {
                 });
 }
 
-function modifierTache() {
+function modifierTache(tache) {
     const menuDiv = document.getElementById("container");
     menuDiv.innerHTML = "";
 
     const titre = document.createElement("h1");
-    titre.textContent = "Quelle tâche voulez vous modifier";
+    titre.textContent = "Quelles modification voulez vous apporter";
     titre.style.color = "#B22430";
     menuDiv.style.textAlign = "center";
     menuDiv.appendChild(titre);
 
     const champs = [
-        { name: 'nom', type: 'text', label: 'Nom de la tâche :', placeholder: 'nom de la tache' },
-        { name: 'description', type: 'textarea', label: 'Decrivez la tâche :', placeholder: '50 charactères' },
-        { name: 'date', type: 'date', label: 'Pour Quand :', placeholder: 'jj/mm/aaaa' }
+        { name: 'nom', type: 'text', label: 'Nom de la tâche :', placeholder: 'nom de la tache', value: tache.nom },
+        { name: 'description', type: 'textarea', label: 'Decrivez la tâche :', placeholder: '50 charactères', value: tache.description },
+        { name: 'date', type: 'date', label: 'Pour Quand :', placeholder: 'jj/mm/aaaa', value: tache.date }
     ]
 
     const form = createForm(champs);
@@ -256,18 +246,28 @@ function modifierTache() {
         e.preventDefault();
 
         const nom = document.getElementById('nom').value;
-        const date = document.getElementById('date').value;
+        const description = document.getElementById('description').value;
+        const date = document.getElementById('date').value; 
 
+        if (description.length > 50) {
+            alert("La description ne doit pas dépasser 50 caractères !");
+            return;
+        }
 
-        if (nom && date && form.checkValidity()) {
+        if (nom && description && date && form.checkValidity()) {
 
-            const dateParts = date.split('-'); 
+            const dateParts = date.split('-');
             const formatDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
 
+
             const newTache = {
+                id: tache.id,
                 nom: nom,
+                description: description,
                 date: formatDate,
             };
+
+            console.log("Données envoyées pour modification :", JSON.stringify(newTache, null, 2)); // Afficher le nouvel objet de manière lisible
 
             ecrireJSON("modifier", newTache)
                 .then(() => {
@@ -305,7 +305,12 @@ function afficherTaches(taches) {
         boutonSupp.style.cursor = "pointer";
         boutonSupp.addEventListener("click", function() {
 
-            supprimerTache(tache.nom, tache.date);
+            supprimerTache({
+                id: tache.id,
+                nom: tache.nom,
+                description: tache.description,
+                date: tache.date
+            });
         });
 
         
@@ -314,7 +319,12 @@ function afficherTaches(taches) {
         boutonMod.style.cursor = "pointer";
         boutonMod.addEventListener("click", function() {
             
-            modifierTache(tache);
+            modifierTache({
+                id: tache.id,
+                nom: tache.nom,
+                description: tache.description,
+                date: tache.date
+            });
         });
 
        
@@ -330,4 +340,8 @@ function afficherTaches(taches) {
 
     
     menuDiv.appendChild(ul);
+}
+
+function generateUniqueId() {
+    return '_' + Math.random().toString(36).slice(2, 9); // Génère un ID aléatoire
 }

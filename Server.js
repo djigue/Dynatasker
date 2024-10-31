@@ -43,7 +43,7 @@ app.post('/gestion-tache', (req, res) => {
             case 'supprimer':
                 
                 const tacheASupprimer = toDoList.filter(testTache => 
-                    testTache.nom === tache.nom && testTache.date === tache.date
+                    testTache.id === tache.id
                 );
 
                 if (tacheASupprimer.length === 0) {
@@ -51,7 +51,7 @@ app.post('/gestion-tache', (req, res) => {
                 }
 
                 toDoList = toDoList.filter(testTache => 
-                    !(testTache.nom === tache.nom && testTache.date === tache.date)
+                    testTache.id !== tache.id
                 );
 
                 fs.writeFile('todolist.json', JSON.stringify({ taches: toDoList }, null, 2), (err) => {
@@ -63,10 +63,10 @@ app.post('/gestion-tache', (req, res) => {
             case 'modifier': 
                 
                 const tacheAModifier = toDoList.findIndex(testTache => 
-                    testTache.nom === tache.nom && testTache.date === tache.date
+                    testTache.id === tache.id
                 );
           
-                if (tacheAModifier.length === -1) {
+                if (tacheAModifier === -1) {
                     return res.status(404).send('Tâche non trouvée');
                 }
 
@@ -74,7 +74,7 @@ app.post('/gestion-tache', (req, res) => {
 
                 fs.writeFile('todolist.json', JSON.stringify({ taches: toDoList }, null, 2), (err) => {
                     if (err) return res.status(500).send('Erreur d\'écriture dans le fichier');
-                    res.status(200).send('Tâche supprimée avec succès');
+                    res.status(200).send('Tâche modifié avec succès');
                 });
                 break;
 
