@@ -61,6 +61,16 @@ function afficherMenu() {
         e.preventDefault();
         ajouterTache();
     });
+
+    const boutonSupp = document.createElement("button");
+    boutonSupp.style.cursor = "pointer";
+    boutonSupp.textContent = "Supprimer une tâche";
+    menuDiv.appendChild(boutonSupp);
+
+    boutonSupp.addEventListener("click", function(e) {
+        e.preventDefault();
+        supprimerTache();
+  });
 }
 
 function createForm(champs) {
@@ -162,7 +172,7 @@ function ajouterTache() {
 
             ecrireJSON("ajouter", newTache)
                 .then(() => {
-                    console.log("Tâche ajoutée et affichage mis à jour.");
+                    console.log("Tâche ajoutée");
                 })
                 .catch(error => {
                     console.error("Erreur lors de l'ajout de la tâche :", error);
@@ -193,4 +203,56 @@ async function ecrireJSON(action, tache, id = null) {
         console.error(error);
         alert("Erreur lors de l'opération sur la tâche");
     }
+}
+
+function supprimerTache(){
+const menuDiv = document.getElementById("container");
+    menuDiv.innerHTML = "";
+
+    const titre = document.createElement("h1");
+    titre.textContent = "Quelle tâche voulez vous supprimer";
+    titre.style.color = "#B22430";
+    menuDiv.style.textAlign = "center";
+    menuDiv.appendChild(titre);
+
+    const champs = [
+        { name: 'nom', type: 'text', label: 'Nom de la tâche :', placeholder: 'nom de la tache' },
+        { name: 'date', type: 'date', label: 'Pour Quand :', placeholder: 'jj/mm/aaaa' }
+    ]
+
+    const form = createForm(champs);
+    menuDiv.appendChild(form);
+ 
+    const boutonSupp = document.createElement("button");
+    boutonSupp.style.cursor = "pointer";
+    boutonSupp.textContent = "Supprimer la tâche";
+    menuDiv.appendChild(boutonSupp);
+
+    boutonSupp.addEventListener("click", function(e) {
+        e.preventDefault();
+
+        const nom = document.getElementById('nom').value;
+        const date = document.getElementById('date').value;
+
+        if (nom && date && form.checkValidity()) {
+
+            const dateParts = date.split('-'); 
+            const formatDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+
+            const suppTache = {
+                nom: nom,
+                date: formatDate,
+            };
+
+            ecrireJSON("supprimer", suppTache)
+                .then(() => {
+                    console.log("Tâche supprimée");
+                })
+                .catch(error => {
+                    console.error("Erreur lors de la suppression de la tâche :", error);
+                });
+        } else {
+            alert("Respectez le format imposé!! (on a pas galéré pour rien)");
+        }
+    });
 }
