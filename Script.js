@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function() {
     fetchEtListerTaches();
 });
 
-const bouton = document.createElement("button"); // Ajoutez ici si ce n'était pas défini
+const bouton = document.createElement("button"); 
 const options = ["Toutes", "Actives", "Terminées"];
 let toDoList = [];
 
@@ -44,15 +44,8 @@ function afficherMenu() {
     menuDiv.appendChild(titre);
 
     creerCheckbox();
+    afficherTaches(toDoList);
     
-    const ul = document.createElement("section");
-    toDoList.forEach(tache => {
-        const li = document.createElement("p");
-        li.textContent = `${tache.nom} ${tache.description} - ${tache.date}`;
-        ul.appendChild(li);
-    });
-    menuDiv.appendChild(ul);
-
     bouton.textContent = "Créer une nouvelle tâche";
     bouton.style.cursor = "pointer";
     menuDiv.appendChild(bouton);
@@ -70,7 +63,9 @@ function afficherMenu() {
     boutonSupp.addEventListener("click", function(e) {
         e.preventDefault();
         supprimerTache();
-  });
+    });
+
+ 
 }
 
 function createForm(champs) {
@@ -205,7 +200,7 @@ async function ecrireJSON(action, tache, id = null) {
     }
 }
 
-function supprimerTache(){
+function supprimerTache() {
 const menuDiv = document.getElementById("container");
     menuDiv.innerHTML = "";
 
@@ -255,4 +250,89 @@ const menuDiv = document.getElementById("container");
             alert("Respectez le format imposé!! (on a pas galéré pour rien)");
         }
     });
+}
+
+function modifierTache() {
+    const menuDiv = document.getElementById("container");
+    menuDiv.innerHTML = "";
+
+    const titre = document.createElement("h1");
+    titre.textContent = "Quelle tâche voulez vous modifier";
+    titre.style.color = "#B22430";
+    menuDiv.style.textAlign = "center";
+    menuDiv.appendChild(titre);
+
+    const champs = [
+        { name: 'nom', type: 'text', label: 'Nom de la tâche :', placeholder: 'nom de la tache' },
+        { name: 'description', type: 'textarea', label: 'Decrivez la tâche :', placeholder: '50 charactères' },
+        { name: 'date', type: 'date', label: 'Pour Quand :', placeholder: 'jj/mm/aaaa' }
+    ]
+
+    const form = createForm(champs);
+    menuDiv.appendChild(form);
+ 
+    const boutonMod = document.createElement("button");
+    boutonMod.style.cursor = "pointer";
+    boutonMod.textContent = "modifier la tâche";
+    menuDiv.appendChild(boutonMod);
+
+    boutonMod.addEventListener("click", function(e) {
+        e.preventDefault();
+
+        const nom = document.getElementById('nom').value;
+        const date = document.getElementById('date').value;
+
+
+        if (nom && date && form.checkValidity()) {
+
+            const dateParts = date.split('-'); 
+            const formatDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+
+            const newTache = {
+                nom: nom,
+                date: formatDate,
+            };
+
+            ecrireJSON("modifier", newTache)
+                .then(() => {
+                    console.log("Tâche modifiée");
+                })
+                .catch(error => {
+                    console.error("Erreur lors de la modification de la tâche :", error);
+                });
+        } else {
+            alert("Respectez le format imposé!! (on a pas galéré pour rien)");
+        }
+    });
+}
+
+function afficherTaches(taches) {
+    const menuDiv = document.getElementById("container");
+    const ul = document.createElement("section"); 
+
+    taches.forEach(tache => {
+        const tacheDiv = document.createElement("div"); 
+        tacheDiv.classList.add("tache"); 
+        tacheDiv.style.border = "2px solid black";
+
+        const  nomTache= document.createElement("p");
+        nomTache.textContent = `Nom : ${tache.nom}`;
+        
+        const descTache = document.createElement("p");
+        descTache.textContent = `Description : ${tache.description}`;
+        
+        const dateTache = document.createElement("p");
+        dateTache.textContent = `Date : ${tache.date}`;
+
+       
+        tacheDiv.appendChild(nomTache);
+        tacheDiv.appendChild(descTache);
+        tacheDiv.appendChild(dateTache);
+
+        
+        ul.appendChild(tacheDiv);
+    });
+
+    
+    menuDiv.appendChild(ul);
 }

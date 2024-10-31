@@ -46,7 +46,7 @@ app.post('/gestion-tache', (req, res) => {
                     testTache.nom === tache.nom && testTache.date === tache.date
                 );
 
-                if (tacheASupprimer.length === 0) {
+                if (tacheASupprimer.length === -1) {
                     return res.status(404).send('Tâche non trouvée');
                 }
 
@@ -59,6 +59,25 @@ app.post('/gestion-tache', (req, res) => {
                     res.status(200).send('Tâche supprimée avec succès');
                 });
                 break;
+
+            case 'modifier': 
+                
+                const tacheAModifier = toDoList.findIndex(testTache => 
+                    testTache.nom === tache.nom && testTache.date === tache.date
+                );
+          
+                if (tacheAModifier.length === -1) {
+                    return res.status(404).send('Tâche non trouvée');
+                }
+
+                toDoList[tacheAModifier] = { ...toDoList[tacheAModifier], ...tache };
+
+                fs.writeFile('todolist.json', JSON.stringify({ taches: toDoList }, null, 2), (err) => {
+                    if (err) return res.status(500).send('Erreur d\'écriture dans le fichier');
+                    res.status(200).send('Tâche supprimée avec succès');
+                });
+                break;
+
 
             default:
                 res.status(400).send('Action non reconnue');
