@@ -1,19 +1,14 @@
 {
   "taches": [
     {
-      "nom": "manger",
-      "description": "un cassoulet",
-      "date": "02/10/2024"
+      "nom": "tri date",
+      "description": "test",
+      "date": "01/01/2024"
     },
     {
-      "nom": "dormir",
-      "description": "pendant 3 jours",
-      "date": "04/11/2024"
-    },
-    {
-      "nom": "courrir",
-      "description": "pas longtemps",
-      "date": "02/11/2024"
+      "nom": "test tri datee",
+      "description": "vfvs",
+      "date": "14/07/2024"
     }
   ]
 }

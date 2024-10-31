@@ -63,6 +63,39 @@ function afficherMenu() {
     });
 }
 
+function createForm(champs) {
+    
+    const formContainer = document.createElement('form');
+    formContainer.className = 'custom-form';
+  
+   
+    champs.forEach(champ => {
+      const fieldContainer = document.createElement('div');
+      fieldContainer.className = 'form-field';
+  
+     
+      if (champ.label) {
+        const label = document.createElement('label');
+        label.innerText = champ.label;
+        label.htmlFor = champ.name;
+        fieldContainer.appendChild(label);
+      }
+  
+      
+      const input = document.createElement(champ.type === 'textarea' ? 'textarea' : 'input');
+      input.type = champ.type || 'text'; 
+      input.name = champ.name;
+      input.id = champ.name;
+      input.placeholder = champ.placeholder || '';
+      if (champ.value) input.value = champ.value;
+      
+      fieldContainer.appendChild(input);
+      formContainer.appendChild(fieldContainer);
+    });
+  
+    return formContainer;
+  }
+
 function creerCheckbox() {
     const container = document.getElementById('container');
     options.forEach(option => {
@@ -90,45 +123,15 @@ function ajouterTache() {
     menuDiv.style.textAlign = "center";
     menuDiv.appendChild(titre);
 
-    const form = document.createElement("form");
+    const champs = [
+        { name: 'nom', type: 'text', label: 'Nom de la tâche :', placeholder: 'nom de la tache' },
+        { name: 'description', type: 'textarea', label: 'Decrivez la tâche :', placeholder: '50 charactères' },
+        { name: 'date', type: 'date', label: 'Pour Quand :', placeholder: 'jj/mm/aaaa' }
+    ]
 
-    const labelNom = document.createElement("label");
-    labelNom.textContent = "Quel nom voulez vous donner à votre nouvelle tâche :";
-    form.appendChild(labelNom);
-
-    const nomInput = document.createElement("input");
-    nomInput.placeholder = "Nom de la tâche";
-    nomInput.style.marginTop = "5%";
-    nomInput.required = true;
-    form.appendChild(nomInput);
-
-    form.appendChild(document.createElement("br"));
-
-    const labelDescription = document.createElement("label");
-    labelDescription.textContent = "Décrivez votre tâche :";
-    form.appendChild(labelDescription);
-
-    const descriptionInput = document.createElement("textarea");
-    descriptionInput.placeholder = "Description de la tâche";
-    descriptionInput.style.marginTop = "5%";
-    descriptionInput.required = true;
-    form.appendChild(descriptionInput);
-
-    form.appendChild(document.createElement("br"));
-
-    const labelDate = document.createElement("label");
-    labelDate.textContent = "Quelle est la date limite :";
-    form.appendChild(labelDate);
-
-    const dateInput = document.createElement("input");
-    dateInput.placeholder = "jj/mm/aaaa";
-    dateInput.required = true;
-    form.appendChild(dateInput);
-
-    form.appendChild(document.createElement("br"));
-
+    const form = createForm(champs);
     menuDiv.appendChild(form);
-
+ 
     const boutonAjout = document.createElement("button");
     boutonAjout.style.cursor = "pointer";
     boutonAjout.textContent = "Ajouter la tâche";
@@ -137,15 +140,24 @@ function ajouterTache() {
     boutonAjout.addEventListener("click", function(e) {
         e.preventDefault();
 
-        const nom = nomInput.value;
-        const description = descriptionInput.value;
-        const date = dateInput.value;
+        const nom = document.getElementById('nom').value;
+        const description = document.getElementById('description').value;
+        const date = document.getElementById('date').value;
+
+        if (description.length > 50) {
+            alert("La description ne doit pas dépasser 50 caractères !");
+            return;
+        }
 
         if (nom && description && date && form.checkValidity()) {
+
+            const dateParts = date.split('-'); 
+            const formatDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+
             const newTache = {
                 nom: nom,
                 description: description,
-                date: date,
+                date: formatDate,
             };
 
             ecrireJSON("ajouter", newTache)
