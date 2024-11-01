@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 const bouton = document.createElement("button"); 
-const options = ["Toutes", "Actives", "Terminées"];
 let toDoList = [];
 
 async function myJson(url) {
@@ -13,9 +12,15 @@ async function myJson(url) {
     }
     const data = await response.json();
     if (data.taches) {
-        toDoList = data.taches.sort((a, b) => new Date(a.date) - new Date(b.date));
-    }
+        toDoList = data.taches.sort((a, b) => {
+            const [jourA, moisA, anneeA] = a.date.split("/");
+            const [jourB, moisB, anneeB] = b.date.split("/");
+            const dateA = new Date(`${anneeA}-${moisA}-${jourA}`);
+            const dateB = new Date(`${anneeB}-${moisB}-${jourB}`);
+            return dateA - dateB;
+        })
     return data;
+}
 }
 
 function fetchEtListerTaches() {
@@ -43,7 +48,26 @@ function afficherMenu() {
     menuDiv.style.textAlign = "center";
     menuDiv.appendChild(titre);
 
-    creerCheckbox();
+    const buttonContainer = document.createElement("div");
+    
+    const boutonTous = document.createElement("button");
+    boutonTous.textContent = "Tous";
+    boutonTous.addEventListener('click', () => afficherTaches(toDoList));
+    
+    const boutonTermines = document.createElement("button");
+    boutonTermines.textContent = "Terminés";
+    boutonTermines.addEventListener('click', () => afficherTaches(toDoList.filter(t => t.terminee)));
+
+    const boutonNonTermines = document.createElement("button");
+    boutonNonTermines.textContent = "Non terminés";
+    boutonNonTermines.addEventListener('click', () => afficherTaches(toDoList.filter(t => !t.terminee)));
+
+    buttonContainer.appendChild(boutonTous);
+    buttonContainer.appendChild(boutonTermines);
+    buttonContainer.appendChild(boutonNonTermines);
+    
+    menuDiv.appendChild(buttonContainer);
+
     afficherTaches(toDoList);
     
     bouton.textContent = "Créer une nouvelle tâche";
@@ -55,17 +79,6 @@ function afficherMenu() {
         ajouterTache();
     });
 
-    // const boutonSupp = document.createElement("button");
-    // boutonSupp.style.cursor = "pointer";
-    // boutonSupp.textContent = "Supprimer une tâche";
-    // menuDiv.appendChild(boutonSupp);
-
-    // boutonSupp.addEventListener("click", function(e) {
-    //     e.preventDefault();
-    //     supprimerTache();
-    // });
-
- 
 }
 
 function createForm(champs) {
@@ -101,22 +114,6 @@ function createForm(champs) {
     return formContainer;
   }
 
-function creerCheckbox() {
-    const container = document.getElementById('container');
-    options.forEach(option => {
-        const label = document.createElement('label');
-        label.style.display = 'block';
-
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.value = option;
-        checkbox.name = 'options';
-
-        label.appendChild(checkbox);
-        label.appendChild(document.createTextNode(option));
-        container.appendChild(label);
-    });
-}
 
 function ajouterTache() {
     const menuDiv = document.getElementById("container");
@@ -156,8 +153,8 @@ function ajouterTache() {
 
         if (nom && description && date && form.checkValidity()) {
 
-            const dateParts = date.split('-'); 
-            const formatDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+            const  [annee, mois, jour] = date.split("-");
+            const formatDate = `${jour}/${mois}/${annee}`;
 
             const newTache = {
                 id: generateUniqueId(),
@@ -256,8 +253,8 @@ function modifierTache(tache) {
 
         if (nom && description && date && form.checkValidity()) {
 
-            const dateParts = date.split('-');
-            const formatDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+            const  [annee, mois, jour] = date.split("-");
+            const formatDate = `${jour}/${mois}/${annee}`;
 
 
             const newTache = {
@@ -267,7 +264,7 @@ function modifierTache(tache) {
                 date: formatDate,
             };
 
-            console.log("Données envoyées pour modification :", JSON.stringify(newTache, null, 2)); // Afficher le nouvel objet de manière lisible
+            console.log("Données envoyées pour modification :", JSON.stringify(newTache, null, 2)); 
 
             ecrireJSON("modifier", newTache)
                 .then(() => {
@@ -284,8 +281,14 @@ function modifierTache(tache) {
 
 function afficherTaches(taches) {
     const menuDiv = document.getElementById("container");
-    const ul = document.createElement("section"); 
 
+    let ul = menuDiv.querySelector("section"); 
+    if (!ul) {
+        ul = document.createElement("section"); 
+        menuDiv.appendChild(ul);
+    } else {
+        ul.innerHTML = ""; 
+    }
     taches.forEach(tache => {
         const tacheDiv = document.createElement("div"); 
         tacheDiv.classList.add("tache"); 
@@ -307,9 +310,6 @@ function afficherTaches(taches) {
 
             supprimerTache({
                 id: tache.id,
-                nom: tache.nom,
-                description: tache.description,
-                date: tache.date
             });
         });
 
@@ -327,12 +327,44 @@ function afficherTaches(taches) {
             });
         });
 
+        const label = document.createElement("label");
+        label.innerText = "tache terminée :";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = tache.terminee || false; 
+
+    
+        checkbox.addEventListener("change", function() {
+        tache.terminee = checkbox.checked; 
+        if (checkbox.checked) {
+            tacheDiv.classList.add("terminee"); 
+        } else {
+            tacheDiv.classList.remove("terminee");
+        }
+
+        const tacheData = {
+            id: tache.id,
+            terminee: tache.terminee
+        };
+    
+        ecrireJSON("modifier", tacheData)
+            .then(() => {
+                console.log("État de la tâche mis à jour");
+            })
+            .catch(error => {
+                console.error("Erreur lors de la mise à jour de l'état de la tâche :", error);
+            });
+    });
+
        
         tacheDiv.appendChild(nomTache);
         tacheDiv.appendChild(descTache);
         tacheDiv.appendChild(dateTache);
         tacheDiv.appendChild(boutonSupp); 
         tacheDiv.appendChild(boutonMod);
+        tacheDiv.appendChild(label);
+        tacheDiv.appendChild(checkbox);
 
         
         ul.appendChild(tacheDiv);
@@ -343,5 +375,5 @@ function afficherTaches(taches) {
 }
 
 function generateUniqueId() {
-    return '_' + Math.random().toString(36).slice(2, 9); // Génère un ID aléatoire
+    return '_' + Math.random().toString(36).slice(2, 9); 
 }
