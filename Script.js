@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", function() {
 const bouton = document.createElement("button"); 
 let toDoList = [];
 
+const boutonClass1 = 'rounded, bg-blue-200';
+
 async function myJson(url) {
     const response = await fetch(url);
     if (!response.ok) {
@@ -41,17 +43,30 @@ function lancement() {
 function afficherMenu() {
     const menuDiv = document.getElementById("container");
     menuDiv.innerHTML = "";
-        
+    
     const titre = document.createElement("h1");
     titre.textContent = "Gestionnaire de Tâches";
     titre.style.color = "#B22430";
+    titre.classList.add("p-10","text-5xl")
     menuDiv.style.textAlign = "center";
     menuDiv.appendChild(titre);
 
+    bouton.textContent = "Créer une nouvelle tâche";
+    bouton.style.cursor = "pointer";
+    bouton.classList.add("w-52","h-9","rounded-lg","bg-emerald-900");
+    menuDiv.appendChild(bouton);
+
+    bouton.addEventListener('click', function(e) {
+        e.preventDefault();
+        ajouterTache();
+    });
+
     const buttonContainer = document.createElement("div");
+    buttonContainer.classList.add("flex","flex-row","justify-center","gap-5","p-5");
     
     const boutonTous = document.createElement("button");
     boutonTous.textContent = "Tous";
+    boutonTous.classList.add("rounded-lg","bg-emerald-800","w-16");
     boutonTous.addEventListener('click', () => afficherTaches(toDoList));
     
     const boutonTermines = document.createElement("button");
@@ -68,16 +83,7 @@ function afficherMenu() {
     
     menuDiv.appendChild(buttonContainer);
 
-    afficherTaches(toDoList);
-    
-    bouton.textContent = "Créer une nouvelle tâche";
-    bouton.style.cursor = "pointer";
-    menuDiv.appendChild(bouton);
-
-    bouton.addEventListener('click', function(e) {
-        e.preventDefault();
-        ajouterTache();
-    });
+    afficherTaches(toDoList);   
 
 }
 
@@ -285,14 +291,14 @@ function afficherTaches(taches) {
     let ul = menuDiv.querySelector("section"); 
     if (!ul) {
         ul = document.createElement("section"); 
+        ul.classList.add("flex","flex-col","items-center","gap-6","shadow-xl");
         menuDiv.appendChild(ul);
     } else {
         ul.innerHTML = ""; 
     }
     taches.forEach(tache => {
         const tacheDiv = document.createElement("div"); 
-        tacheDiv.classList.add("tache"); 
-        tacheDiv.style.border = "2px solid black";
+        tacheDiv.classList.add("tache","border","border-4","bg-emerald-200","flex","justify-around","p-10","w-3/4","rounded-lg","shadow-xl"); 
 
         const  nomTache= document.createElement("p");
         nomTache.textContent = `Nom : ${tache.nom}`;
@@ -303,8 +309,15 @@ function afficherTaches(taches) {
         const dateTache = document.createElement("p");
         dateTache.textContent = `Date : ${tache.date}`;
 
+        const boutons = document.createElement("div");
+        boutons.classList.add("flex","gap-5");
+
         const boutonSupp = document.createElement("button");
-        boutonSupp.textContent = "Supprimer";
+        const imgSup = document.createElement("img");
+        imgSup.src = "supp.png";
+        imgSup.alt = "supprimer";
+        imgSup
+        boutonSupp.appendChild(imgSup);
         boutonSupp.style.cursor = "pointer";
         boutonSupp.addEventListener("click", function() {
 
@@ -315,7 +328,10 @@ function afficherTaches(taches) {
 
         
         const boutonMod = document.createElement("button");
-        boutonMod.textContent = "Modifier";
+        const imgMod = document.createElement("img");
+        imgMod.src = "modif.png";
+        imgMod.alt = "modifier";
+        boutonMod.appendChild(imgMod);
         boutonMod.style.cursor = "pointer";
         boutonMod.addEventListener("click", function() {
             
@@ -326,6 +342,9 @@ function afficherTaches(taches) {
                 date: tache.date
             });
         });
+
+        boutons.appendChild(boutonSupp); 
+        boutons.appendChild(boutonMod);
 
         const label = document.createElement("label");
         label.innerText = "tache terminée :";
@@ -361,8 +380,7 @@ function afficherTaches(taches) {
         tacheDiv.appendChild(nomTache);
         tacheDiv.appendChild(descTache);
         tacheDiv.appendChild(dateTache);
-        tacheDiv.appendChild(boutonSupp); 
-        tacheDiv.appendChild(boutonMod);
+        tacheDiv.appendChild(boutons)
         tacheDiv.appendChild(label);
         tacheDiv.appendChild(checkbox);
 
