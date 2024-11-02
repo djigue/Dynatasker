@@ -25,34 +25,41 @@ async function myJson(url) {
 
 function fetchEtListerTaches() {
     myJson('todolist.json')
-        .then(() => lancement())
+        .then(() => afficherMenu())
         .catch(error => console.error("L'opération fetch a rencontré un problème:", error));
 }
 
-function lancement() {
-    document.getElementById("lancement").addEventListener("click", function(e) {
-        document.getElementById("lancement").style.display = "none";
-        document.getElementById("container").style.display = "block";
-        e.preventDefault();
-    });
-    afficherMenu();
-}
+// function lancement() {
+//     document.getElementById("lancement").addEventListener("click", function(e) {
+//         document.getElementById("lancement").style.display = "none";
+//         document.getElementById("container").style.display = "block";
+//         e.preventDefault();
+//     });
+//     afficherMenu();
+// }
+
+// afficherMenu();
 
 function afficherMenu() {
     const menuDiv = document.getElementById("container");
     menuDiv.innerHTML = "";
     
-    const titre = document.createElement("h1");
-    titre.textContent = "Gestionnaire de Tâches";
-    titre.classList.add("text-6xl", "font-bold","p-8","text-shadow", "shadow-gray-900","text-teal-900");
-    menuDiv.style.textAlign = "center";
-    menuDiv.appendChild(titre);
+    const titreBoutonAj = document.createElement("div");
+    titreBoutonAj.classList.add("flex","flex-col","items-center",)
+    
+    const titre = document.createElement("img");
+    titre.src = "logoDynatasker.png";
+    titre.classList.add("p-2","mb-0","w-3/4");
+    titreBoutonAj.appendChild(titre);
+    
 
     bouton.textContent = "Créer une nouvelle tâche";
     bouton.style.cursor = "pointer";
-    bouton.classList.add("w-56","h-10","rounded-lg","bg-cyan-600","hover:bg-cyan-900","ring-4","ring-cyan-800","text-cyan-200",
-        "shadow-lg","shadow-gray-900");
-    menuDiv.appendChild(bouton);
+    bouton.classList.add("w-56","h-10","rounded-lg","bg-emerald-400","hover:bg-emerald-600","ring-4","ring-zinc-600","text-zinc-600",
+        "shadow-lg","shadow-gray-900","mt-2");
+    titreBoutonAj.appendChild(bouton);
+
+    menuDiv.appendChild(titreBoutonAj);
 
     bouton.addEventListener('click', function(e) {
         e.preventDefault();
@@ -60,24 +67,24 @@ function afficherMenu() {
     });
 
     const buttonContainer = document.createElement("div");
-    buttonContainer.classList.add("flex","flex-row","justify-center","gap-5","p-8", "my-5");
+    buttonContainer.classList.add("flex","flex-row","justify-center","gap-5","p-8",);
     
     const boutonTous = document.createElement("button");
     boutonTous.textContent = "Toutes";
-    boutonTous.classList.add("rounded-lg","bg-cyan-600","w-40","hover:bg-cyan-900","ring-4","ring-cyan-800","text-cyan-200",
+    boutonTous.classList.add("rounded-lg","bg-emerald-400","w-40","hover:bg-emerald-600","ring-4","ring-zinc-600","text-zinc-600",
         "shadow-lg","shadow-gray-900");
     boutonTous.addEventListener('click', () => afficherTaches(toDoList));
     
     const boutonTermines = document.createElement("buton");
     boutonTermines.textContent = "Terminées";
-    boutonTermines.classList.add("rounded-lg","bg-cyan-600","w-40","hover:bg-cyan-900","ring-4","ring-cyan-800","text-cyan-200",
+    boutonTermines.classList.add("rounded-lg","bg-emerald-400","w-40","hover:bg-emerald-600","ring-4","ring-zinc-600","text-zinc-600","text-center",
         "shadow-lg","shadow-gray-900"
     );
     boutonTermines.addEventListener('click', () => afficherTaches(toDoList.filter(t => t.terminee)));
 
     const boutonNonTermines = document.createElement("button");
     boutonNonTermines.textContent = "Non terminées";
-    boutonNonTermines.classList.add("rounded-lg","bg-cyan-600","w-40","hover:bg-cyan-900","ring-4","ring-cyan-800","text-cyan-200",
+    boutonNonTermines.classList.add("rounded-lg","bg-emerald-400","w-40","hover:bg-emerald-600","ring-4","ring-zinc-600","text-zinc-600",
         "shadow-lg","shadow-gray-900");
     boutonNonTermines.addEventListener('click', () => afficherTaches(toDoList.filter(t => !t.terminee)));
 
@@ -291,19 +298,19 @@ function modifierTache(tache) {
 
 function afficherTaches(taches) {
     const menuDiv = document.getElementById("container");
-    menuDiv.classList.add("flex","justify-center", "bg-cyan-500/50")
+    menuDiv.classList.add("flex","justify-center", "bg-zinc-600/20")
 
     let ul = menuDiv.querySelector("section"); 
     if (!ul) {
         ul = document.createElement("section"); 
-        ul.classList.add("grid","grid-cols-3","w-4/5", "bg-cyan-400/50", "ml-40","flex","justify-items-center","rounded-lg","gap-y-2",);
+        ul.classList.add("grid","grid-cols-3","w-4/5", "ml-40","flex","justify-items-center","rounded-lg","gap-y-2",);
         menuDiv.appendChild(ul);
     } else {
         ul.innerHTML = ""; 
     }
     taches.forEach(tache => {
         const tacheDiv = document.createElement("div"); 
-        tacheDiv.classList.add("tache","border","border-4","bg-cyan-200","flex","flex-col","justify-around","h-96","w-11/12","rounded-lg","m-5",
+        tacheDiv.classList.add("tache","border","border-4","bg-emerald-400","flex","flex-col","justify-around","h-96","w-11/12","rounded-lg","m-5",
             "shadow-lg","shadow-gray-900"); 
 
         const nomDate = document.createElement("div");
@@ -314,6 +321,11 @@ function afficherTaches(taches) {
 
         const  nomTache= document.createElement("p");
         nomTache.textContent = `${tache.nom}`;
+
+        const descTache = document.createElement("p");
+        descTache.textContent = `${tache.description}`;
+        descTache.classList.add("h-72","bg-zinc-100","rounded-lg","m-2")
+
 
         nomDate.appendChild(dateTache);
         nomDate.appendChild(nomTache);
@@ -360,10 +372,6 @@ function afficherTaches(taches) {
 
         nomDateBoutons.appendChild(nomDate);
         nomDateBoutons.appendChild(boutons);
-
-        const descTache = document.createElement("p");
-        descTache.textContent = `${tache.description}`;
-        descTache.classList.add("h-72","bg-purple-100","rounded-lg","m-2")
 
         const label = document.createElement("label");
         label.innerText = "tache terminée :";

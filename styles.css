@@ -5,3 +5,10 @@
 .text-shadow {
     text-shadow: 6px 6px 10px rgba(0, 0, 0, 0.3);
 }
+
+.caveat-dynatasker {
+    font-family: "Caveat", cursive;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+  }
