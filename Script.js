@@ -5,8 +5,6 @@ document.addEventListener("DOMContentLoaded", function() {
 const bouton = document.createElement("button"); 
 let toDoList = [];
 
-const boutonClass1 = 'rounded, bg-blue-200';
-
 async function myJson(url) {
     const response = await fetch(url);
     if (!response.ok) {
@@ -46,14 +44,14 @@ function afficherMenu() {
     
     const titre = document.createElement("h1");
     titre.textContent = "Gestionnaire de Tâches";
-    titre.style.color = "#B22430";
-    titre.classList.add("p-10","text-5xl")
+    titre.classList.add("text-6xl", "font-bold","p-8","text-shadow", "shadow-gray-900","text-teal-900");
     menuDiv.style.textAlign = "center";
     menuDiv.appendChild(titre);
 
     bouton.textContent = "Créer une nouvelle tâche";
     bouton.style.cursor = "pointer";
-    bouton.classList.add("w-52","h-9","rounded-lg","bg-emerald-900");
+    bouton.classList.add("w-56","h-10","rounded-lg","bg-cyan-600","hover:bg-cyan-900","ring-4","ring-cyan-800","text-cyan-200",
+        "shadow-lg","shadow-gray-900");
     menuDiv.appendChild(bouton);
 
     bouton.addEventListener('click', function(e) {
@@ -62,19 +60,25 @@ function afficherMenu() {
     });
 
     const buttonContainer = document.createElement("div");
-    buttonContainer.classList.add("flex","flex-row","justify-center","gap-5","p-5");
+    buttonContainer.classList.add("flex","flex-row","justify-center","gap-5","p-8", "my-5");
     
     const boutonTous = document.createElement("button");
-    boutonTous.textContent = "Tous";
-    boutonTous.classList.add("rounded-lg","bg-emerald-800","w-16");
+    boutonTous.textContent = "Toutes";
+    boutonTous.classList.add("rounded-lg","bg-cyan-600","w-40","hover:bg-cyan-900","ring-4","ring-cyan-800","text-cyan-200",
+        "shadow-lg","shadow-gray-900");
     boutonTous.addEventListener('click', () => afficherTaches(toDoList));
     
-    const boutonTermines = document.createElement("button");
-    boutonTermines.textContent = "Terminés";
+    const boutonTermines = document.createElement("buton");
+    boutonTermines.textContent = "Terminées";
+    boutonTermines.classList.add("rounded-lg","bg-cyan-600","w-40","hover:bg-cyan-900","ring-4","ring-cyan-800","text-cyan-200",
+        "shadow-lg","shadow-gray-900"
+    );
     boutonTermines.addEventListener('click', () => afficherTaches(toDoList.filter(t => t.terminee)));
 
     const boutonNonTermines = document.createElement("button");
-    boutonNonTermines.textContent = "Non terminés";
+    boutonNonTermines.textContent = "Non terminées";
+    boutonNonTermines.classList.add("rounded-lg","bg-cyan-600","w-40","hover:bg-cyan-900","ring-4","ring-cyan-800","text-cyan-200",
+        "shadow-lg","shadow-gray-900");
     boutonNonTermines.addEventListener('click', () => afficherTaches(toDoList.filter(t => !t.terminee)));
 
     buttonContainer.appendChild(boutonTous);
@@ -287,27 +291,32 @@ function modifierTache(tache) {
 
 function afficherTaches(taches) {
     const menuDiv = document.getElementById("container");
+    menuDiv.classList.add("flex","justify-center", "bg-cyan-500/50")
 
     let ul = menuDiv.querySelector("section"); 
     if (!ul) {
         ul = document.createElement("section"); 
-        ul.classList.add("flex","flex-col","items-center","gap-6","shadow-xl");
+        ul.classList.add("grid","grid-cols-3","w-4/5", "bg-cyan-400/50", "ml-40","flex","justify-items-center","rounded-lg","gap-y-2",);
         menuDiv.appendChild(ul);
     } else {
         ul.innerHTML = ""; 
     }
     taches.forEach(tache => {
         const tacheDiv = document.createElement("div"); 
-        tacheDiv.classList.add("tache","border","border-4","bg-emerald-200","flex","justify-around","p-10","w-3/4","rounded-lg","shadow-xl"); 
+        tacheDiv.classList.add("tache","border","border-4","bg-cyan-200","flex","flex-col","justify-around","h-96","w-11/12","rounded-lg","m-5",
+            "shadow-lg","shadow-gray-900"); 
 
-        const  nomTache= document.createElement("p");
-        nomTache.textContent = `Nom : ${tache.nom}`;
-        
-        const descTache = document.createElement("p");
-        descTache.textContent = `Description : ${tache.description}`;
-        
+        const nomDate = document.createElement("div");
+
         const dateTache = document.createElement("p");
         dateTache.textContent = `Date : ${tache.date}`;
+        dateTache.classList.add("text-lg", "font-bold")
+
+        const  nomTache= document.createElement("p");
+        nomTache.textContent = `${tache.nom}`;
+
+        nomDate.appendChild(dateTache);
+        nomDate.appendChild(nomTache);
 
         const boutons = document.createElement("div");
         boutons.classList.add("flex","gap-5");
@@ -346,6 +355,16 @@ function afficherTaches(taches) {
         boutons.appendChild(boutonSupp); 
         boutons.appendChild(boutonMod);
 
+        const nomDateBoutons = document.createElement("div");
+        nomDateBoutons.classList.add("flex","justify-around");
+
+        nomDateBoutons.appendChild(nomDate);
+        nomDateBoutons.appendChild(boutons);
+
+        const descTache = document.createElement("p");
+        descTache.textContent = `${tache.description}`;
+        descTache.classList.add("h-72","bg-purple-100","rounded-lg","m-2")
+
         const label = document.createElement("label");
         label.innerText = "tache terminée :";
 
@@ -376,11 +395,8 @@ function afficherTaches(taches) {
             });
     });
 
-       
-        tacheDiv.appendChild(nomTache);
+        tacheDiv.appendChild(nomDateBoutons);
         tacheDiv.appendChild(descTache);
-        tacheDiv.appendChild(dateTache);
-        tacheDiv.appendChild(boutons)
         tacheDiv.appendChild(label);
         tacheDiv.appendChild(checkbox);
 
