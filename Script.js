@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function() {
 const bouton = document.createElement("button"); 
 let toDoList = [];
 
+
 async function myJson(url) {
     const response = await fetch(url);
     if (!response.ok) {
@@ -43,13 +44,14 @@ function fetchEtListerTaches() {
 function afficherMenu() {
     const menuDiv = document.getElementById("container");
     menuDiv.innerHTML = "";
+    menuDiv.classList.add("flex","justify-center", "bg-zinc-600/20");
     
     const titreBoutonAj = document.createElement("div");
     titreBoutonAj.classList.add("flex","flex-col","items-center",)
     
     const titre = document.createElement("img");
     titre.src = "logoDynatasker.png";
-    titre.classList.add("p-2","mb-0","w-3/4");
+    titre.classList.add("p-1","mb-0","w-3/4");
     titreBoutonAj.appendChild(titre);
     
 
@@ -106,7 +108,7 @@ function createForm(champs) {
    
     champs.forEach(champ => {
       const fieldContainer = document.createElement('div');
-      fieldContainer.className = 'form-field';
+      fieldContainer.classList.add("flex","flex-col","items-center","m-2");
   
      
       if (champ.label) {
@@ -123,6 +125,18 @@ function createForm(champs) {
       input.id = champ.name;
       input.placeholder = champ.placeholder || '';
       if (champ.value) input.value = champ.value;
+
+      if (champ.name === 'date') {
+        input.classList.add("rounded-lg","bg-zinc-100","text-gray-700","shadow-md","shadow-gray-900");
+    }
+
+    if (champ.name === 'nom') {
+        input.classList.add("rounded-lg","bg-zinc-100","text-gray-700","w3/4","text-center","shadow-md","shadow-gray-900");
+    }
+
+      if (champ.type === 'textarea') {
+        input.classList.add("p-4","rounded-lg","bg-zinc-100","text-gray-700","w-5/6","h-72","shadow-md","shadow-gray-900","mb-2");
+    }
       
       fieldContainer.appendChild(input);
       formContainer.appendChild(fieldContainer);
@@ -135,26 +149,35 @@ function createForm(champs) {
 function ajouterTache() {
     const menuDiv = document.getElementById("container");
     menuDiv.innerHTML = "";
+    menuDiv.classList.add("flex","flex-col","justify-center","items-center","bg-[url('fondEcran.webp')]","bg-cover","bg-center","w-screen","h-screen");
 
     const titre = document.createElement("h1");
-    titre.textContent = "Quelle tâche voulez vous ajouter";
-    titre.style.color = "#B22430";
+    titre.textContent = "Quelle tâche voulez vous ajouter ?";
+    titre.classList.add("text-emerald-500","text-5xl","p-8","font-bold");
     menuDiv.style.textAlign = "center";
     menuDiv.appendChild(titre);
 
+    const formBouton = document.createElement("div");
+    formBouton.classList.add("flex","flex-col","items-center","h-screen","mt-1");
     const champs = [
+        { name: 'date', type: 'date', label: 'Pour Quand :', placeholder: 'jj/mm/aaaa' },
         { name: 'nom', type: 'text', label: 'Nom de la tâche :', placeholder: 'nom de la tache' },
-        { name: 'description', type: 'textarea', label: 'Decrivez la tâche :', placeholder: '50 charactères' },
-        { name: 'date', type: 'date', label: 'Pour Quand :', placeholder: 'jj/mm/aaaa' }
+        { name: 'description', type: 'textarea', label: 'Décrivez la tâche :', placeholder: '50 caractères' }
     ]
 
     const form = createForm(champs);
-    menuDiv.appendChild(form);
+    form.classList.add("border","border-4","bg-emerald-400","flex","flex-col","justify-around","w-1/4","h-fit","h-2/3","rounded-lg","m-5",
+            "shadow-xl","shadow-gray-900");
+    formBouton.appendChild(form);
  
     const boutonAjout = document.createElement("button");
     boutonAjout.style.cursor = "pointer";
     boutonAjout.textContent = "Ajouter la tâche";
-    menuDiv.appendChild(boutonAjout);
+    boutonAjout.classList.add("w-56","h-10","rounded-lg","bg-emerald-400","hover:bg-emerald-600","ring-4","ring-zinc-600","text-zinc-600",
+        "shadow-lg","shadow-gray-900","mt-2","mb-4");
+    formBouton.appendChild(boutonAjout);
+
+    menuDiv.appendChild(formBouton);
 
     boutonAjout.addEventListener("click", function(e) {
         e.preventDefault();
@@ -235,26 +258,36 @@ function supprimerTache(tache) {
 function modifierTache(tache) {
     const menuDiv = document.getElementById("container");
     menuDiv.innerHTML = "";
+    menuDiv.classList.add("flex","flex-col","justify-center","items-center","bg-[url('fondEcran.webp')]","bg-cover","bg-center","w-screen","h-screen");
 
     const titre = document.createElement("h1");
-    titre.textContent = "Quelles modification voulez vous apporter";
-    titre.style.color = "#B22430";
+    titre.textContent = "Quelles modifications voulez vous apporter ?";
+    titre.classList.add("text-emerald-600","text-5xl","p-8","font-bold");
     menuDiv.style.textAlign = "center";
     menuDiv.appendChild(titre);
 
+    const formBouton = document.createElement("div");
+    formBouton.classList.add("flex","flex-col","items-center","h-screen","mt-1");
+
     const champs = [
+        { name: 'date', type: 'date', label: 'Pour quand ?', placeholder: 'jj/mm/aaaa', value: tache.date },
         { name: 'nom', type: 'text', label: 'Nom de la tâche :', placeholder: 'nom de la tache', value: tache.nom },
-        { name: 'description', type: 'textarea', label: 'Decrivez la tâche :', placeholder: '50 charactères', value: tache.description },
-        { name: 'date', type: 'date', label: 'Pour Quand :', placeholder: 'jj/mm/aaaa', value: tache.date }
+        { name: 'description', type: 'textarea', label: 'Décrivez la tâche :', placeholder: '50 caractères', value: tache.description }
     ]
 
     const form = createForm(champs);
-    menuDiv.appendChild(form);
+    form.classList.add("border","border-4","bg-emerald-400","flex","flex-col","justify-around","w-1/4","h-fit","h-2/3","rounded-lg","m-5",
+        "shadow-xl","shadow-gray-900");
+    formBouton.appendChild(form);
  
     const boutonMod = document.createElement("button");
     boutonMod.style.cursor = "pointer";
     boutonMod.textContent = "modifier la tâche";
-    menuDiv.appendChild(boutonMod);
+    boutonMod.classList.add("w-56","h-10","rounded-lg","bg-emerald-400","hover:bg-emerald-600","ring-4","ring-zinc-600","text-zinc-600",
+        "shadow-lg","shadow-gray-900","mt-2")
+    formBouton.appendChild(boutonMod);
+
+    menuDiv.appendChild(formBouton);
 
     boutonMod.addEventListener("click", function(e) {
         e.preventDefault();
@@ -298,7 +331,7 @@ function modifierTache(tache) {
 
 function afficherTaches(taches) {
     const menuDiv = document.getElementById("container");
-    menuDiv.classList.add("flex","justify-center", "bg-zinc-600/20")
+    menuDiv.classList.add("flex","justify-center", "bg-[url('fondEcran.webp')]","bg-cover","bg-center");
 
     let ul = menuDiv.querySelector("section"); 
     if (!ul) {
@@ -310,8 +343,8 @@ function afficherTaches(taches) {
     }
     taches.forEach(tache => {
         const tacheDiv = document.createElement("div"); 
-        tacheDiv.classList.add("tache","border","border-4","bg-emerald-400","flex","flex-col","justify-around","h-96","w-11/12","rounded-lg","m-5",
-            "shadow-lg","shadow-gray-900"); 
+        tacheDiv.classList.add("border","border-4","bg-emerald-400","flex","flex-col","justify-around","h-96","w-11/12","rounded-lg","m-5",
+            "shadow-xl","shadow-gray-900"); 
 
         const nomDate = document.createElement("div");
 
@@ -373,14 +406,19 @@ function afficherTaches(taches) {
         nomDateBoutons.appendChild(nomDate);
         nomDateBoutons.appendChild(boutons);
 
+        const labelCheckbox = document.createElement("div");
+        labelCheckbox.classList.add("flex", "justify-center","font-bold","mb-2");
+
         const label = document.createElement("label");
-        label.innerText = "tache terminée :";
+        label.innerText = "Tâche terminée :";
 
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         checkbox.checked = tache.terminee || false; 
 
-    
+        labelCheckbox.appendChild(label);
+        labelCheckbox.appendChild(checkbox);
+
         checkbox.addEventListener("change", function() {
         tache.terminee = checkbox.checked; 
         if (checkbox.checked) {
@@ -405,8 +443,8 @@ function afficherTaches(taches) {
 
         tacheDiv.appendChild(nomDateBoutons);
         tacheDiv.appendChild(descTache);
-        tacheDiv.appendChild(label);
-        tacheDiv.appendChild(checkbox);
+        tacheDiv.appendChild(labelCheckbox);
+        
 
         
         ul.appendChild(tacheDiv);
