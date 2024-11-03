@@ -30,17 +30,6 @@ function fetchEtListerTaches() {
         .catch(error => console.error("L'opération fetch a rencontré un problème:", error));
 }
 
-// function lancement() {
-//     document.getElementById("lancement").addEventListener("click", function(e) {
-//         document.getElementById("lancement").style.display = "none";
-//         document.getElementById("container").style.display = "block";
-//         e.preventDefault();
-//     });
-//     afficherMenu();
-// }
-
-// afficherMenu();
-
 function afficherMenu() {
     const menuDiv = document.getElementById("container");
     menuDiv.innerHTML = "";
@@ -157,7 +146,7 @@ function ajouterTache() {
     menuDiv.appendChild(titre);
 
     const formBouton = document.createElement("div");
-    formBouton.classList.add("flex","flex-col","items-center","h-screen","mt-1");
+    formBouton.classList.add("flex","flex-col","items-center","h-screen","mt-1",);
     const champs = [
         { name: 'date', type: 'date', label: 'Pour Quand :', placeholder: 'jj/mm/aaaa' },
         { name: 'nom', type: 'text', label: 'Nom de la tâche :', placeholder: 'nom de la tache' },
@@ -166,14 +155,14 @@ function ajouterTache() {
 
     const form = createForm(champs);
     form.classList.add("border","border-4","bg-emerald-400","flex","flex-col","justify-around","w-1/4","h-2/3","rounded-lg","m-5",
-            "shadow-xl","shadow-gray-900");
+            "shadow-xl","shadow-gray-900","max-sm:w-11/12","max-sm:h-1/2");
     formBouton.appendChild(form);
  
     const boutonAjout = document.createElement("button");
     boutonAjout.style.cursor = "pointer";
     boutonAjout.textContent = "Ajouter la tâche";
     boutonAjout.classList.add("w-1/4","h-10","rounded-lg","bg-emerald-400","hover:bg-emerald-600","ring-4","ring-zinc-600","text-zinc-600",
-        "shadow-lg","shadow-gray-900","mt-2","mb-4");
+        "shadow-lg","shadow-gray-900","mt-2","mb-4","max-sm:flex","max-sm:justify-center","max-sm:items-center");
     formBouton.appendChild(boutonAjout);
 
     menuDiv.appendChild(formBouton);
@@ -184,13 +173,18 @@ function ajouterTache() {
         const nom = document.getElementById('nom').value;
         const description = document.getElementById('description').value;
         const date = document.getElementById('date').value;
+        const [jourA, moisA, anneeA] = date.split("/");
+        const dateVerif = new Date(`${anneeA}-${moisA}-${jourA}`);
+        const dateJour = new Date(); 
+        dateJour.setHours(0, 0, 0, 0); 
+        dateVerif.setHours(0, 0, 0, 0);  
+    
+        if (dateVerif < dateJour) {
 
-        if (description.length > 50) {
-            alert("La description ne doit pas dépasser 50 caractères !");
-            return;
-        }
+            alert("La date n'est pas valide");
+            return; 
 
-        if (nom && description && date && form.checkValidity()) {
+        }else if (nom && description && date && form.checkValidity()) {
 
             const  [annee, mois, jour] = date.split("-");
             const formatDate = `${jour}/${mois}/${annee}`;
@@ -209,8 +203,10 @@ function ajouterTache() {
                 .catch(error => {
                     console.error("Erreur lors de l'ajout de la tâche :", error);
                 });
+
         } else {
-            alert("Respectez le format imposé!! (on a pas galéré pour rien)");
+
+            alert("Veuillez remplir tous les champs");
         }
     });
 }
@@ -276,14 +272,14 @@ function modifierTache(tache) {
 
     const form = createForm(champs);
     form.classList.add("border","border-4","bg-emerald-400","flex","flex-col","justify-around","w-1/4","h-fit","h-2/3","rounded-lg","m-5",
-        "shadow-xl","shadow-gray-900");
+        "shadow-xl","shadow-gray-900","max-sm:w-11/12","max-sm:h-1/2");
     formBouton.appendChild(form);
  
     const boutonMod = document.createElement("button");
     boutonMod.style.cursor = "pointer";
     boutonMod.textContent = "modifier la tâche";
     boutonMod.classList.add("w-56","h-10","rounded-lg","bg-emerald-400","hover:bg-emerald-600","ring-4","ring-zinc-600","text-zinc-600",
-        "shadow-lg","shadow-gray-900","mt-2")
+        "shadow-lg","shadow-gray-900","mt-2","max-sm:flex","max-sm:justify-center","max-sm:items-center");
     formBouton.appendChild(boutonMod);
 
     menuDiv.appendChild(formBouton);
@@ -294,16 +290,24 @@ function modifierTache(tache) {
         const nom = document.getElementById('nom').value;
         const description = document.getElementById('description').value;
         const date = document.getElementById('date').value; 
+        const [jourA, moisA, anneeA] = date.split("/");
+    
 
-        if (description.length > 50) {
-            alert("La description ne doit pas dépasser 50 caractères !");
-            return;
-        }
+    const dateVerif = new Date(`${anneeA}-${moisA}-${jourA}`);
+    const dateJour = new Date(); 
+    dateJour.setHours(0, 0, 0, 0); 
+    dateVerif.setHours(0, 0, 0, 0); 
 
-        if (nom && description && date && form.checkValidity()) {
+    console.log("Date vérifiée:", dateVerif); 
+    console.log("Date d'aujourd'hui:", dateJour); 
 
-            const  [annee, mois, jour] = date.split("-");
-            const formatDate = `${jour}/${mois}/${annee}`;
+    if (dateVerif < dateJour) {
+        alert("La date n'est pas valide");
+        return; 
+    }
+        else if (nom && description && date && form.checkValidity()) {
+
+            const formatDate = `${jourA}/${moisA}/${anneeA}`;
 
 
             const newTache = {
@@ -323,7 +327,7 @@ function modifierTache(tache) {
                     console.error("Erreur lors de la modification de la tâche :", error);
                 });
         } else {
-            alert("Respectez le format imposé!! (on a pas galéré pour rien)");
+            alert("Veuillez remplir tous les champs");
         }
     });
 }
