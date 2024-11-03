@@ -66,7 +66,7 @@ function afficherMenu() {
     //on récupère et on vide menuDiv
     const menuDiv = document.getElementById("container");
     menuDiv.innerHTML = "";
-    menuDiv.classList.add("flex","justify-center",);//css pour positionner au centre
+    menuDiv.classList.add("flex","justify-center" ,"bg-[url('fondEcran.webp')]","bg-cover","bg-center","h-full");//css pour positionner au centre
     
     //div pour contenir le titre et le bouton ajouter
     const titreBoutonAj = document.createElement("div");
@@ -139,7 +139,7 @@ function afficherTaches(taches) {
 
     //on récupère et style menuDiv
     const menuDiv = document.getElementById("container");
-    menuDiv.classList.add("flex","justify-center", "bg-[url('fondEcran.webp')]","bg-cover","bg-center",);
+    menuDiv.classList.add("flex","justify-center",);
 
     // creation d'une liste pour afficher les tâches
     let ul = menuDiv.querySelector("section");//regarde si une section existe déja indispensable pour le tri par état
@@ -314,7 +314,6 @@ function createForm(champs) {
     return formContainer;
   }
 
-
 function ajouterTache() {
     const menuDiv = document.getElementById("container");
     menuDiv.innerHTML = "";
@@ -331,7 +330,7 @@ function ajouterTache() {
 
     //cration objet pour formulaire 
     const champs = [
-        { name: 'date', type: 'date', label: 'Pour Quand :', placeholder: 'jj/mm/aaaa' },
+        { name: 'date', type: 'date', label: 'Pour quand ?', placeholder: 'jj/mm/aaaa' },
         { name: 'nom', type: 'text', label: 'Nom de la tâche :', placeholder: 'nom de la tache' },
         { name: 'description', type: 'textarea', label: 'Décrivez la tâche :'}
     ]
@@ -473,7 +472,8 @@ function modifierTache(tache) {
     //si tout va bien on envoie la requete au server
         else if (nom && description && date && form.checkValidity()) {
 
-            const formatDate = `${jourA}/${moisA}/${anneeA}`;
+            const  [annee, mois, jour] = date.split("-");
+            const formatDate = `${jour}/${mois}/${annee}`;
 
            //objet a envoyer
             const newTache = {
