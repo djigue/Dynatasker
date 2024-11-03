@@ -57,8 +57,8 @@ function afficherMenu() {
 
     bouton.textContent = "Créer une nouvelle tâche";
     bouton.style.cursor = "pointer";
-    bouton.classList.add("w-56","h-10","rounded-lg","bg-emerald-400","hover:bg-emerald-600","ring-4","ring-zinc-600","text-zinc-600",
-        "shadow-lg","shadow-gray-900","mt-2");
+    bouton.classList.add("w-1/6","h-10","rounded-lg","bg-emerald-400","hover:bg-emerald-600","ring-4","ring-zinc-600","text-zinc-600",
+        "shadow-lg","shadow-gray-900","mt-2","max-sm:w-1/2");
     titreBoutonAj.appendChild(bouton);
 
     menuDiv.appendChild(titreBoutonAj);
@@ -73,21 +73,20 @@ function afficherMenu() {
     
     const boutonTous = document.createElement("button");
     boutonTous.textContent = "Toutes";
-    boutonTous.classList.add("rounded-lg","bg-emerald-400","w-40","hover:bg-emerald-600","ring-4","ring-zinc-600","text-zinc-600",
-        "shadow-lg","shadow-gray-900");
+    boutonTous.classList.add("rounded-lg","bg-emerald-400","w-1/12","hover:bg-emerald-600","ring-4","ring-zinc-600","text-zinc-600",
+        "shadow-lg","shadow-gray-900","max-sm:w-1/3");
     boutonTous.addEventListener('click', () => afficherTaches(toDoList));
     
     const boutonTermines = document.createElement("buton");
     boutonTermines.textContent = "Terminées";
-    boutonTermines.classList.add("rounded-lg","bg-emerald-400","w-40","hover:bg-emerald-600","ring-4","ring-zinc-600","text-zinc-600","text-center",
-        "shadow-lg","shadow-gray-900"
-    );
+    boutonTermines.classList.add("rounded-lg","bg-emerald-400","w-1/12","hover:bg-emerald-600","ring-4","ring-zinc-600","text-zinc-600",
+        "text-center","shadow-lg","shadow-gray-900","max-sm:w-1/3","flex","justify-center","items-center");
     boutonTermines.addEventListener('click', () => afficherTaches(toDoList.filter(t => t.terminee)));
 
     const boutonNonTermines = document.createElement("button");
-    boutonNonTermines.textContent = "Non terminées";
-    boutonNonTermines.classList.add("rounded-lg","bg-emerald-400","w-40","hover:bg-emerald-600","ring-4","ring-zinc-600","text-zinc-600",
-        "shadow-lg","shadow-gray-900");
+    boutonNonTermines.textContent = "Non Terminées";
+    boutonNonTermines.classList.add("rounded-lg","bg-emerald-400","w-1/12","hover:bg-emerald-600","ring-4","ring-zinc-600","text-zinc-600",
+        "shadow-lg","shadow-gray-900","max-sm:w-1/3");
     boutonNonTermines.addEventListener('click', () => afficherTaches(toDoList.filter(t => !t.terminee)));
 
     buttonContainer.appendChild(boutonTous);
@@ -166,14 +165,14 @@ function ajouterTache() {
     ]
 
     const form = createForm(champs);
-    form.classList.add("border","border-4","bg-emerald-400","flex","flex-col","justify-around","w-1/4","h-fit","h-2/3","rounded-lg","m-5",
+    form.classList.add("border","border-4","bg-emerald-400","flex","flex-col","justify-around","w-1/4","h-2/3","rounded-lg","m-5",
             "shadow-xl","shadow-gray-900");
     formBouton.appendChild(form);
  
     const boutonAjout = document.createElement("button");
     boutonAjout.style.cursor = "pointer";
     boutonAjout.textContent = "Ajouter la tâche";
-    boutonAjout.classList.add("w-56","h-10","rounded-lg","bg-emerald-400","hover:bg-emerald-600","ring-4","ring-zinc-600","text-zinc-600",
+    boutonAjout.classList.add("w-1/4","h-10","rounded-lg","bg-emerald-400","hover:bg-emerald-600","ring-4","ring-zinc-600","text-zinc-600",
         "shadow-lg","shadow-gray-900","mt-2","mb-4");
     formBouton.appendChild(boutonAjout);
 
@@ -336,21 +335,22 @@ function afficherTaches(taches) {
     let ul = menuDiv.querySelector("section"); 
     if (!ul) {
         ul = document.createElement("section"); 
-        ul.classList.add("grid","grid-cols-3","w-4/5", "ml-40","flex","justify-items-center","rounded-lg","gap-y-2",);
+        ul.classList.add("grid","grid-cols-3","w-4/5", "ml-40","flex","justify-items-center",
+            "rounded-lg","gap-y-2","max-sm:flex","max-sm:flex-col","max-sm:ml-8");
         menuDiv.appendChild(ul);
     } else {
         ul.innerHTML = ""; 
     }
     taches.forEach(tache => {
         const tacheDiv = document.createElement("div"); 
-        tacheDiv.classList.add("border","border-4","bg-emerald-400","flex","flex-col","justify-around","h-96","w-11/12","rounded-lg","m-5",
+        tacheDiv.classList.add("border","border-4","bg-emerald-400","flex","flex-col","justify-around","h-11/12","w-11/12","rounded-lg","m-5",
             "shadow-xl","shadow-gray-900"); 
 
         const nomDate = document.createElement("div");
 
         const dateTache = document.createElement("p");
         dateTache.textContent = `Date : ${tache.date}`;
-        dateTache.classList.add("text-lg", "font-bold")
+        dateTache.classList.add("text-lg", "font-bold");
 
         const  nomTache= document.createElement("p");
         nomTache.textContent = `${tache.nom}`;
